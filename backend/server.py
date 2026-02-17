@@ -80,6 +80,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     city: str
+    university: Optional[str] = None  # Only for .edu users
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -156,10 +157,6 @@ def get_time_ago(created_at: str) -> str:
 # Auth Routes
 @api_router.post("/auth/register")
 async def register(user: UserCreate):
-    # Check if email is .edu
-    if not is_edu_email(user.email):
-        raise HTTPException(status_code=400, detail="Only .edu email addresses are allowed")
-    
     # Check if user exists
     existing = await db.users.find_one({"email": user.email.lower()})
     if existing:
@@ -168,13 +165,18 @@ async def register(user: UserCreate):
     # Generate verification code
     verification_code = generate_verification_code()
     
+    # Determine if user has .edu email (gets university access)
+    has_edu_email = is_edu_email(user.email)
+    university = extract_university_from_email(user.email) if has_edu_email else None
+    
     # Create user
     user_doc = {
         "id": str(uuid.uuid4()),
         "email": user.email.lower(),
         "password": hash_password(user.password),
-        "university": extract_university_from_email(user.email),
+        "university": university,
         "city": user.city,
+        "has_university_access": has_edu_email,
         "is_verified": False,
         "verification_code": verification_code,
         "karma": 0,
@@ -218,9 +220,10 @@ async def verify_email(data: VerifyEmail):
         "user": {
             "id": user["id"],
             "email": user["email"],
-            "university": user["university"],
+            "university": user.get("university"),
             "city": user["city"],
-            "karma": user["karma"]
+            "karma": user["karma"],
+            "has_university_access": user.get("has_university_access", False)
         }
     }
 
@@ -243,9 +246,10 @@ async def login(data: UserLogin):
         "user": {
             "id": user["id"],
             "email": user["email"],
-            "university": user["university"],
+            "university": user.get("university"),
             "city": user["city"],
-            "karma": user["karma"]
+            "karma": user["karma"],
+            "has_university_access": user.get("has_university_access", False)
         }
     }
 
@@ -254,9 +258,10 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return {
         "id": current_user["id"],
         "email": current_user["email"],
-        "university": current_user["university"],
+        "university": current_user.get("university"),
         "city": current_user["city"],
-        "karma": current_user["karma"]
+        "karma": current_user["karma"],
+        "has_university_access": current_user.get("has_university_access", False)
     }
 
 # Post Routes
