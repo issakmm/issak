@@ -46,7 +46,6 @@ export default function PostDetailPage() {
 
     const newVote = post.user_vote === vote ? 0 : vote;
     
-    // Optimistic update
     setPost(prev => {
       let upvotes = prev.upvotes;
       let downvotes = prev.downvotes;
@@ -73,7 +72,6 @@ export default function PostDetailPage() {
 
     const newVote = comment.user_vote === vote ? 0 : vote;
     
-    // Optimistic update
     setComments(comments.map(c => {
       if (c.id !== commentId) return c;
       
@@ -108,7 +106,7 @@ export default function PostDetailPage() {
       setComments([...comments, res.data]);
       setPost(prev => ({ ...prev, comment_count: prev.comment_count + 1 }));
       setNewComment("");
-      toast.success("Comment added!");
+      toast.success("Comment added");
     } catch (err) {
       toast.error(err.response?.data?.detail || "Failed to add comment");
     } finally {
@@ -119,9 +117,9 @@ export default function PostDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-          <p className="text-muted-foreground">Loading post...</p>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -134,26 +132,27 @@ export default function PostDetailPage() {
   const postScore = post.upvotes - post.downvotes;
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="max-w-xl mx-auto px-4 py-3 flex items-center gap-3">
           <Button
             data-testid="back-btn"
             variant="ghost"
             size="icon"
             onClick={() => navigate("/feed")}
+            className="text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft className="w-6 h-6" />
+            <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold">Post</h1>
+          <span className="font-medium">Post</span>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <main className="max-w-xl mx-auto px-4 py-4">
         {/* Post */}
-        <div className="card-sticker mb-8 animate-slide-up" data-testid="post-detail">
-          <p className="text-xl leading-relaxed mb-6 whitespace-pre-wrap">
+        <div className="card-minimal mb-6 animate-fade-in" data-testid="post-detail">
+          <p className="text-foreground text-lg leading-relaxed mb-6 whitespace-pre-wrap">
             {post.content}
           </p>
           
@@ -162,15 +161,13 @@ export default function PostDetailPage() {
               <button
                 data-testid="post-upvote-btn"
                 onClick={() => handleVotePost(1)}
-                className={`vote-btn upvote ${post.user_vote === 1 ? "active" : ""}`}
+                className={`vote-btn ${post.user_vote === 1 ? "upvote active" : ""}`}
               >
-                <ArrowUp className="w-6 h-6" />
+                <ArrowUp className="w-5 h-5" />
               </button>
               
-              <span className={`font-bold text-xl min-w-[50px] text-center ${
-                postScore > 0 ? "text-[hsl(var(--upvote))]" : 
-                postScore < 0 ? "text-[hsl(var(--downvote))]" : 
-                "text-muted-foreground"
+              <span className={`text-sm font-medium min-w-[40px] text-center ${
+                postScore > 0 ? "text-primary" : "text-muted-foreground"
               }`}>
                 {postScore}
               </span>
@@ -178,35 +175,35 @@ export default function PostDetailPage() {
               <button
                 data-testid="post-downvote-btn"
                 onClick={() => handleVotePost(-1)}
-                className={`vote-btn downvote ${post.user_vote === -1 ? "active" : ""}`}
+                className={`vote-btn ${post.user_vote === -1 ? "downvote active" : ""}`}
               >
-                <ArrowDown className="w-6 h-6" />
+                <ArrowDown className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="flex items-center gap-4 text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5" />
-                <span>{post.comment_count} comments</span>
+            <div className="flex items-center gap-3 text-muted-foreground text-sm">
+              <div className="flex items-center gap-1">
+                <MessageCircle className="w-4 h-4" />
+                <span>{post.comment_count}</span>
               </div>
-              <span className="mono">{post.time_ago}</span>
+              <span>{post.time_ago}</span>
             </div>
           </div>
         </div>
 
         {/* Comments Section */}
         <div className="space-y-4">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <MessageCircle className="w-5 h-5" />
-            Comments ({comments.length})
+          <h2 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+            <MessageCircle className="w-4 h-4" />
+            {comments.length} {comments.length === 1 ? "comment" : "comments"}
           </h2>
 
           {comments.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>No comments yet. Be the first to reply!</p>
+            <div className="text-center py-8 text-muted-foreground text-sm">
+              No comments yet
             </div>
           ) : (
-            <div className="space-y-3 stagger-children">
+            <div className="space-y-2 stagger-children">
               {comments.map((comment) => (
                 <CommentCard 
                   key={comment.id} 
@@ -219,15 +216,15 @@ export default function PostDetailPage() {
         </div>
       </main>
 
-      {/* Comment Input - Fixed at Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-xl border-t border-border p-4">
-        <form onSubmit={handleSubmitComment} className="max-w-2xl mx-auto flex gap-3">
+      {/* Comment Input */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4">
+        <form onSubmit={handleSubmitComment} className="max-w-xl mx-auto flex gap-2">
           <Textarea
             data-testid="comment-input"
             placeholder="Write a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="flex-1 min-h-[50px] max-h-[100px] border-2 resize-none"
+            className="flex-1 min-h-[44px] max-h-[100px] bg-muted border-border text-foreground resize-none py-3"
             maxLength={300}
             rows={1}
           />
@@ -235,9 +232,10 @@ export default function PostDetailPage() {
             data-testid="submit-comment-btn"
             type="submit"
             disabled={submitting || !newComment.trim()}
-            className="btn-brutal bg-primary text-primary-foreground px-6"
+            size="icon"
+            className="bg-primary text-primary-foreground h-[44px] w-[44px]"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           </Button>
         </form>
       </div>
@@ -250,25 +248,23 @@ function CommentCard({ comment, onVote }) {
   
   return (
     <div 
-      className="bg-muted rounded-xl p-4 border border-border/50"
+      className="bg-muted/50 rounded-lg p-4 border border-border/50"
       data-testid={`comment-card-${comment.id}`}
     >
-      <p className="mb-3 whitespace-pre-wrap">{comment.content}</p>
+      <p className="text-foreground mb-3 whitespace-pre-wrap text-sm">{comment.content}</p>
       
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <button
             data-testid={`comment-upvote-btn-${comment.id}`}
             onClick={() => onVote(comment.id, 1)}
-            className={`vote-btn upvote p-1.5 ${comment.user_vote === 1 ? "active" : ""}`}
+            className={`vote-btn p-1 ${comment.user_vote === 1 ? "upvote active" : ""}`}
           >
-            <ArrowUp className="w-4 h-4" />
+            <ArrowUp className="w-3.5 h-3.5" />
           </button>
           
-          <span className={`font-bold text-sm min-w-[30px] text-center ${
-            score > 0 ? "text-[hsl(var(--upvote))]" : 
-            score < 0 ? "text-[hsl(var(--downvote))]" : 
-            "text-muted-foreground"
+          <span className={`text-xs font-medium min-w-[24px] text-center ${
+            score > 0 ? "text-primary" : "text-muted-foreground"
           }`}>
             {score}
           </span>
@@ -276,13 +272,13 @@ function CommentCard({ comment, onVote }) {
           <button
             data-testid={`comment-downvote-btn-${comment.id}`}
             onClick={() => onVote(comment.id, -1)}
-            className={`vote-btn downvote p-1.5 ${comment.user_vote === -1 ? "active" : ""}`}
+            className={`vote-btn p-1 ${comment.user_vote === -1 ? "downvote active" : ""}`}
           >
-            <ArrowDown className="w-4 h-4" />
+            <ArrowDown className="w-3.5 h-3.5" />
           </button>
         </div>
         
-        <span className="text-xs text-muted-foreground mono">{comment.time_ago}</span>
+        <span className="text-xs text-muted-foreground">{comment.time_ago}</span>
       </div>
     </div>
   );

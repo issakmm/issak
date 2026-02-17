@@ -14,24 +14,21 @@ import {
 } from "../components/ui/dialog";
 import { 
   MessageCircle, 
-  ArrowUp, 
-  ArrowDown, 
-  MapPin, 
-  GraduationCap,
+  Shield,
   Eye,
   EyeOff,
-  Sparkles
+  Lock,
+  MapPin
 } from "lucide-react";
 
 export default function LandingPage() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
   const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState("login"); // "login", "register", "verify"
+  const [authMode, setAuthMode] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
@@ -55,8 +52,8 @@ export default function LandingPage() {
     try {
       const res = await api.post("/auth/register", { email, password, city });
       setPendingEmail(email);
-      setVerificationCode(res.data.verification_code); // For demo - would be sent via email
-      toast.success("Registration successful! Check your email for verification code.");
+      setVerificationCode(res.data.verification_code);
+      toast.success("Check your email for the verification code");
       setAuthMode("verify");
     } catch (err) {
       toast.error(err.response?.data?.detail || "Registration failed");
@@ -74,7 +71,7 @@ export default function LandingPage() {
         code: verificationCode 
       });
       login(res.data.token, res.data.user);
-      toast.success("Email verified! Welcome to NearbyTalk!");
+      toast.success("Welcome to NearbyTalk");
       navigate("/feed");
     } catch (err) {
       toast.error(err.response?.data?.detail || "Verification failed");
@@ -89,7 +86,7 @@ export default function LandingPage() {
     try {
       const res = await api.post("/auth/login", { email, password });
       login(res.data.token, res.data.user);
-      toast.success("Welcome back!");
+      toast.success("Welcome back");
       navigate("/feed");
     } catch (err) {
       toast.error(err.response?.data?.detail || "Login failed");
@@ -107,141 +104,125 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden">
-      {/* Hero Section */}
-      <div className="relative min-h-screen flex flex-col">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="flex items-center justify-between p-6 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <MessageCircle className="w-4 h-4 text-primary" />
+          </div>
+          <span className="text-lg font-semibold text-foreground">NearbyTalk</span>
         </div>
+        <Button 
+          data-testid="header-login-btn"
+          onClick={() => { resetForm(); setAuthMode("login"); setShowAuth(true); }}
+          variant="ghost"
+          className="text-muted-foreground hover:text-foreground"
+        >
+          Sign In
+        </Button>
+      </header>
 
-        {/* Header */}
-        <header className="relative z-10 flex items-center justify-between p-6 md:p-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <MessageCircle className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight">NearbyTalk</span>
-          </div>
-          <Button 
-            data-testid="header-login-btn"
-            onClick={() => { resetForm(); setAuthMode("login"); setShowAuth(true); }}
-            className="btn-brutal bg-primary text-primary-foreground px-6"
-          >
-            Sign In
-          </Button>
-        </header>
-
-        {/* Main Content */}
-        <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
-          <div className="max-w-3xl mx-auto space-y-8 animate-slide-up">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-full text-sm font-medium">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span>Anonymous. Local. Real.</span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-              Your Campus.{" "}
-              <span className="text-primary">Your City.</span>
+      {/* Hero Section */}
+      <main className="max-w-2xl mx-auto px-6 pt-20 pb-32">
+        <div className="space-y-8 animate-fade-in">
+          {/* Headline */}
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-5xl font-semibold text-foreground leading-tight tracking-tight">
+              Local conversations.
               <br />
-              <span className="text-secondary">Unfiltered.</span>
+              <span className="text-muted-foreground">Anonymous by design.</span>
             </h1>
-
-            {/* Subheading */}
-            <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto">
-              Share thoughts, discover what's happening around you, and connect 
-              with your community — all completely anonymous.
+            <p className="text-lg text-muted-foreground max-w-md">
+              Share and discover what's happening in your university and city — without revealing who you are.
             </p>
+          </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button
-                data-testid="get-started-btn"
-                onClick={() => { resetForm(); setAuthMode("register"); setShowAuth(true); }}
-                size="lg"
-                className="btn-brutal bg-primary text-primary-foreground px-8 py-6 text-lg"
-              >
-                Get Started
-              </Button>
-              <Button
-                data-testid="login-btn"
-                onClick={() => { resetForm(); setAuthMode("login"); setShowAuth(true); }}
-                size="lg"
-                variant="outline"
-                className="btn-brutal bg-background px-8 py-6 text-lg"
-              >
-                I have an account
-              </Button>
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <Button
+              data-testid="get-started-btn"
+              onClick={() => { resetForm(); setAuthMode("register"); setShowAuth(true); }}
+              className="btn-minimal bg-primary text-primary-foreground px-6 py-5"
+            >
+              Get Started
+            </Button>
+            <Button
+              data-testid="login-btn"
+              onClick={() => { resetForm(); setAuthMode("login"); setShowAuth(true); }}
+              variant="outline"
+              className="btn-minimal border-border text-foreground px-6 py-5"
+            >
+              I have an account
+            </Button>
+          </div>
+
+          {/* Features */}
+          <div className="grid gap-4 pt-12">
+            <div className="flex items-start gap-4 p-4 rounded-lg bg-card/50 border border-border/50">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground mb-1">Privacy First</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your identity stays hidden. Posts are completely anonymous within your community.
+                </p>
+              </div>
             </div>
 
-            {/* Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 stagger-children">
-              <div className="card-sticker text-left">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <GraduationCap className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">University Feed</h3>
-                <p className="text-muted-foreground">
-                  Connect with students from your campus. Share the real college experience.
+            <div className="flex items-start gap-4 p-4 rounded-lg bg-card/50 border border-border/50">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Lock className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground mb-1">Verified Access</h3>
+                <p className="text-sm text-muted-foreground">
+                  Only .edu email holders can join. Real communities, anonymous voices.
                 </p>
               </div>
+            </div>
 
-              <div className="card-sticker text-left">
-                <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center mb-4">
-                  <MapPin className="w-6 h-6 text-secondary" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">City Feed</h3>
-                <p className="text-muted-foreground">
-                  Discover what's happening in your city. Local vibes, local voices.
-                </p>
+            <div className="flex items-start gap-4 p-4 rounded-lg bg-card/50 border border-border/50">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-5 h-5 text-primary" />
               </div>
-
-              <div className="card-sticker text-left">
-                <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center mb-4">
-                  <div className="flex items-center gap-1">
-                    <ArrowUp className="w-4 h-4 text-[hsl(var(--upvote))]" />
-                    <ArrowDown className="w-4 h-4 text-[hsl(var(--downvote))]" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Vote & Discuss</h3>
-                <p className="text-muted-foreground">
-                  Upvote what resonates. Downvote the rest. Your voice matters.
+              <div>
+                <h3 className="font-medium text-foreground mb-1">Local Focus</h3>
+                <p className="text-sm text-muted-foreground">
+                  Switch between your university and city feeds. See what matters nearby.
                 </p>
               </div>
             </div>
           </div>
-        </main>
+        </div>
+      </main>
 
-        {/* Footer */}
-        <footer className="relative z-10 p-6 text-center text-sm text-muted-foreground">
-          <p>Only .edu email addresses • 100% Anonymous • Built for students</p>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 p-4 text-center text-xs text-muted-foreground border-t border-border/50 bg-background">
+        Only .edu email addresses • Anonymous posting • Your data stays private
+      </footer>
 
       {/* Auth Dialog */}
       <Dialog open={showAuth} onOpenChange={setShowAuth}>
-        <DialogContent className="sm:max-w-md border-2 border-border">
+        <DialogContent className="sm:max-w-md bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
-              {authMode === "login" && "Welcome Back"}
-              {authMode === "register" && "Join NearbyTalk"}
-              {authMode === "verify" && "Verify Email"}
+            <DialogTitle className="text-xl font-semibold text-foreground">
+              {authMode === "login" && "Welcome back"}
+              {authMode === "register" && "Create account"}
+              {authMode === "verify" && "Verify email"}
             </DialogTitle>
-            <DialogDescription>
-              {authMode === "login" && "Sign in to continue to your feeds"}
+            <DialogDescription className="text-muted-foreground">
+              {authMode === "login" && "Sign in to continue"}
               {authMode === "register" && "Use your .edu email to get started"}
               {authMode === "verify" && `Enter the code sent to ${pendingEmail}`}
             </DialogDescription>
           </DialogHeader>
 
           {authMode === "login" && (
-            <form onSubmit={handleLogin} className="space-y-4 pt-4">
+            <form onSubmit={handleLogin} className="space-y-4 pt-2">
               <div className="space-y-2">
-                <Label htmlFor="login-email">Email</Label>
+                <Label htmlFor="login-email" className="text-foreground">Email</Label>
                 <Input
                   id="login-email"
                   data-testid="login-email-input"
@@ -249,12 +230,12 @@ export default function LandingPage() {
                   placeholder="you@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 border-2"
+                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password">Password</Label>
+                <Label htmlFor="login-password" className="text-foreground">Password</Label>
                 <div className="relative">
                   <Input
                     id="login-password"
@@ -263,15 +244,15 @@ export default function LandingPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 border-2 pr-12"
+                    className="bg-muted border-border text-foreground pr-10"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -279,7 +260,7 @@ export default function LandingPage() {
                 data-testid="login-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="w-full btn-brutal bg-primary text-primary-foreground h-12"
+                className="w-full bg-primary text-primary-foreground"
               >
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
@@ -288,7 +269,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => { resetForm(); setAuthMode("register"); }}
-                  className="text-primary font-semibold hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Sign up
                 </button>
@@ -297,9 +278,9 @@ export default function LandingPage() {
           )}
 
           {authMode === "register" && (
-            <form onSubmit={handleRegister} className="space-y-4 pt-4">
+            <form onSubmit={handleRegister} className="space-y-4 pt-2">
               <div className="space-y-2">
-                <Label htmlFor="register-email">University Email</Label>
+                <Label htmlFor="register-email" className="text-foreground">University Email</Label>
                 <Input
                   id="register-email"
                   data-testid="register-email-input"
@@ -307,13 +288,13 @@ export default function LandingPage() {
                   placeholder="you@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 border-2"
+                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
-                <p className="text-xs text-muted-foreground">Must be a .edu email address</p>
+                <p className="text-xs text-muted-foreground">Must be a .edu email</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password">Password</Label>
+                <Label htmlFor="register-password" className="text-foreground">Password</Label>
                 <div className="relative">
                   <Input
                     id="register-password"
@@ -322,21 +303,21 @@ export default function LandingPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 border-2 pr-12"
+                    className="bg-muted border-border text-foreground pr-10"
                     minLength={6}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-city">Your City</Label>
+                <Label htmlFor="register-city" className="text-foreground">City</Label>
                 <Input
                   id="register-city"
                   data-testid="register-city-input"
@@ -344,7 +325,7 @@ export default function LandingPage() {
                   placeholder="San Francisco"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="h-12 border-2"
+                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
               </div>
@@ -352,7 +333,7 @@ export default function LandingPage() {
                 data-testid="register-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="w-full btn-brutal bg-primary text-primary-foreground h-12"
+                className="w-full bg-primary text-primary-foreground"
               >
                 {loading ? "Creating account..." : "Create Account"}
               </Button>
@@ -361,7 +342,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => { resetForm(); setAuthMode("login"); }}
-                  className="text-primary font-semibold hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Sign in
                 </button>
@@ -370,9 +351,9 @@ export default function LandingPage() {
           )}
 
           {authMode === "verify" && (
-            <form onSubmit={handleVerify} className="space-y-4 pt-4">
+            <form onSubmit={handleVerify} className="space-y-4 pt-2">
               <div className="space-y-2">
-                <Label htmlFor="verification-code">Verification Code</Label>
+                <Label htmlFor="verification-code" className="text-foreground">Verification Code</Label>
                 <Input
                   id="verification-code"
                   data-testid="verification-code-input"
@@ -380,19 +361,19 @@ export default function LandingPage() {
                   placeholder="123456"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className="h-12 border-2 text-center text-2xl tracking-widest"
+                  className="bg-muted border-border text-foreground text-center text-lg tracking-widest"
                   maxLength={6}
                   required
                 />
                 <p className="text-xs text-muted-foreground text-center">
-                  Demo: Code is shown after registration. In production, check your email.
+                  Demo: Code shown after registration
                 </p>
               </div>
               <Button
                 data-testid="verify-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="w-full btn-brutal bg-primary text-primary-foreground h-12"
+                className="w-full bg-primary text-primary-foreground"
               >
                 {loading ? "Verifying..." : "Verify Email"}
               </Button>
@@ -400,7 +381,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => { resetForm(); setAuthMode("register"); }}
-                  className="text-primary font-semibold hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Use a different email
                 </button>

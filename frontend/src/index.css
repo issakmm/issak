@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,51 +6,29 @@
 
 @layer base {
     :root {
-        --background: 48 33% 97%;
-        --foreground: 0 0% 10%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 10%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 10%;
-        --primary: 263 84% 66%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 82 77% 55%;
-        --secondary-foreground: 0 0% 10%;
-        --muted: 220 14% 96%;
-        --muted-foreground: 220 9% 46%;
-        --accent: 330 85% 70%;
-        --accent-foreground: 0 0% 10%;
-        --destructive: 0 84% 60%;
+        --background: 220 10% 8%;
+        --foreground: 220 10% 95%;
+        --card: 220 10% 10%;
+        --card-foreground: 220 10% 95%;
+        --popover: 220 10% 10%;
+        --popover-foreground: 220 10% 95%;
+        --primary: 227 100% 65%;
+        --primary-foreground: 220 10% 98%;
+        --secondary: 220 10% 16%;
+        --secondary-foreground: 220 10% 90%;
+        --muted: 220 10% 14%;
+        --muted-foreground: 220 10% 55%;
+        --accent: 227 100% 65%;
+        --accent-foreground: 220 10% 98%;
+        --destructive: 0 70% 50%;
         --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 10%;
-        --input: 0 0% 10%;
-        --ring: 263 84% 66%;
-        --radius: 0.75rem;
+        --border: 220 10% 18%;
+        --input: 220 10% 18%;
+        --ring: 227 100% 65%;
+        --radius: 0.5rem;
         
-        --upvote: 24 95% 53%;
-        --downvote: 251 91% 67%;
-    }
-
-    .dark {
-        --background: 240 6% 6%;
-        --foreground: 0 0% 100%;
-        --card: 240 4% 10%;
-        --card-foreground: 0 0% 100%;
-        --popover: 240 4% 10%;
-        --popover-foreground: 0 0% 100%;
-        --primary: 268 85% 77%;
-        --primary-foreground: 0 0% 10%;
-        --secondary: 82 85% 67%;
-        --secondary-foreground: 0 0% 10%;
-        --muted: 240 4% 16%;
-        --muted-foreground: 240 5% 65%;
-        --accent: 330 90% 81%;
-        --accent-foreground: 0 0% 10%;
-        --destructive: 0 63% 31%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 240 4% 26%;
-        --input: 240 4% 26%;
-        --ring: 268 85% 77%;
+        --upvote: 227 100% 65%;
+        --downvote: 220 10% 45%;
     }
 }
 
@@ -60,46 +36,48 @@
     * {
         @apply border-border;
     }
+    html {
+        background-color: #111315;
+    }
     body {
         @apply bg-background text-foreground;
-        font-family: 'DM Sans', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     h1, h2, h3, h4, h5, h6 {
-        font-family: 'Fredoka', sans-serif;
-    }
-    code, .mono {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 600;
     }
 }
 
-/* Neo-Brutalist Button */
-.btn-brutal {
-    @apply rounded-full border-2 border-foreground shadow-[4px_4px_0px_0px_hsl(var(--foreground))] 
-           hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_hsl(var(--foreground))] 
-           transition-all active:translate-y-[4px] active:shadow-none font-bold uppercase tracking-wide;
+/* Minimal Button */
+.btn-minimal {
+    @apply rounded-lg px-4 py-2 font-medium transition-all duration-150;
 }
 
-/* Sticker Card */
-.card-sticker {
-    @apply bg-card border-2 border-border rounded-xl p-6 
-           shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] 
-           hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)] 
-           transition-all;
+.btn-minimal:hover {
+    @apply opacity-90;
 }
 
-/* Floating Navigation */
-.nav-floating {
-    @apply fixed bottom-6 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-xl 
-           border border-border/20 rounded-full p-2 shadow-2xl flex gap-2 z-50;
+.btn-minimal:active {
+    @apply scale-[0.98];
+}
+
+/* Card */
+.card-minimal {
+    @apply bg-card rounded-lg border border-border p-5 transition-colors duration-150;
+}
+
+.card-minimal:hover {
+    @apply border-muted-foreground/30;
 }
 
 /* Feed Toggle */
 .feed-toggle {
-    @apply relative flex bg-muted rounded-full p-1;
+    @apply relative flex bg-muted rounded-lg p-1 w-full;
 }
 
 .feed-toggle-btn {
-    @apply px-6 py-2 rounded-full font-semibold transition-all duration-200 z-10 relative;
+    @apply flex-1 px-4 py-2.5 rounded-md font-medium text-sm transition-all duration-200 z-10 relative text-center;
 }
 
 .feed-toggle-btn.active {
@@ -107,35 +85,31 @@
 }
 
 .feed-toggle-indicator {
-    @apply absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-out;
+    @apply absolute top-1 bottom-1 rounded-md bg-primary transition-all duration-200 ease-out;
 }
 
 /* Vote Buttons */
 .vote-btn {
-    @apply p-2 rounded-full transition-all duration-200 hover:scale-110 active:scale-95;
+    @apply p-2 rounded-md transition-all duration-150;
 }
 
-.vote-btn.upvote {
-    @apply hover:bg-[hsl(var(--upvote))]/20;
+.vote-btn:hover {
+    @apply bg-muted;
 }
 
 .vote-btn.upvote.active {
-    @apply bg-[hsl(var(--upvote))] text-white;
-}
-
-.vote-btn.downvote {
-    @apply hover:bg-[hsl(var(--downvote))]/20;
+    @apply bg-primary/20 text-primary;
 }
 
 .vote-btn.downvote.active {
-    @apply bg-[hsl(var(--downvote))] text-white;
+    @apply bg-muted text-muted-foreground;
 }
 
 /* Animations */
-@keyframes slide-up {
+@keyframes fade-in {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -143,44 +117,13 @@
     }
 }
 
-@keyframes bounce-in {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes pulse-scale {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.02);
-    }
-}
-
-.animate-slide-up {
-    animation: slide-up 0.4s ease-out forwards;
-}
-
-.animate-bounce-in {
-    animation: bounce-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.animate-pulse-scale {
-    animation: pulse-scale 2s ease-in-out infinite;
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
 }
 
 /* Stagger children */
 .stagger-children > * {
-    animation: slide-up 0.4s ease-out forwards;
+    animation: fade-in 0.3s ease-out forwards;
     opacity: 0;
 }
 
@@ -192,31 +135,46 @@
 .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
 .stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
 .stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
-.stagger-children > *:nth-child(9) { animation-delay: 0.45s; }
-.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
-    border-radius: 4px;
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--foreground));
+    background: hsl(var(--muted-foreground) / 0.5);
 }
 
 /* FAB */
 .fab {
     @apply fixed bottom-24 right-6 md:bottom-8 md:right-8 z-40 
-           w-14 h-14 rounded-full flex items-center justify-center
-           shadow-lg hover:shadow-xl transition-all duration-200
-           hover:scale-110 active:scale-95;
+           w-12 h-12 rounded-lg flex items-center justify-center
+           transition-all duration-150;
+}
+
+.fab:hover {
+    @apply opacity-90;
+}
+
+.fab:active {
+    @apply scale-95;
+}
+
+/* Input focus */
+input:focus, textarea:focus {
+    @apply outline-none ring-1 ring-primary/50;
+}
+
+/* Selection */
+::selection {
+    background-color: hsl(var(--primary) / 0.3);
 }

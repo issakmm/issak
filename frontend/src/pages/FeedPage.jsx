@@ -15,6 +15,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { 
@@ -24,12 +25,12 @@ import {
   Plus,
   GraduationCap,
   MapPin,
-  Flame,
   Clock,
   LogOut,
   User,
   MoreVertical,
-  RefreshCw
+  RefreshCw,
+  TrendingUp
 } from "lucide-react";
 
 export default function FeedPage() {
@@ -63,7 +64,6 @@ export default function FeedPage() {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
 
-    // Optimistic update
     const newVote = post.user_vote === vote ? 0 : vote;
     setPosts(posts.map(p => {
       if (p.id !== postId) return p;
@@ -71,11 +71,8 @@ export default function FeedPage() {
       let upvotes = p.upvotes;
       let downvotes = p.downvotes;
       
-      // Remove old vote
       if (p.user_vote === 1) upvotes--;
       if (p.user_vote === -1) downvotes--;
-      
-      // Add new vote
       if (newVote === 1) upvotes++;
       if (newVote === -1) downvotes++;
       
@@ -85,7 +82,6 @@ export default function FeedPage() {
     try {
       await api.post(`/posts/${postId}/vote`, { vote: newVote });
     } catch (err) {
-      // Revert on error
       fetchPosts();
       toast.error("Failed to vote");
     }
@@ -104,7 +100,7 @@ export default function FeedPage() {
       setPosts([res.data, ...posts]);
       setNewPostContent("");
       setShowCreatePost(false);
-      toast.success("Posted anonymously!");
+      toast.success("Posted anonymously");
     } catch (err) {
       toast.error(err.response?.data?.detail || "Failed to create post");
     } finally {
@@ -113,33 +109,30 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-primary-foreground" />
+      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="max-w-xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <MessageCircle className="w-4 h-4 text-primary" />
               </div>
-              <span className="text-xl font-bold">NearbyTalk</span>
+              <span className="text-lg font-semibold">NearbyTalk</span>
             </div>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="user-menu-btn">
+                <Button variant="ghost" size="icon" data-testid="user-menu-btn" className="text-muted-foreground">
                   <MoreVertical className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem className="gap-2" disabled>
+              <DropdownMenuContent align="end" className="w-52 bg-card border-border">
+                <DropdownMenuItem className="gap-2 text-muted-foreground" disabled>
                   <User className="w-4 h-4" />
-                  <span className="truncate">{user?.email}</span>
+                  <span className="truncate text-sm">{user?.email}</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2" disabled>
-                  <Flame className="w-4 h-4 text-[hsl(var(--upvote))]" />
-                  <span>{user?.karma || 0} karma</span>
-                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem 
                   data-testid="logout-btn"
                   className="gap-2 text-destructive focus:text-destructive"
@@ -157,94 +150,91 @@ export default function FeedPage() {
             <div 
               className="feed-toggle-indicator"
               style={{
-                left: feedType === "university" ? "4px" : "calc(50% + 0px)",
+                left: feedType === "university" ? "4px" : "calc(50%)",
                 width: "calc(50% - 4px)",
-                backgroundColor: feedType === "university" 
-                  ? "hsl(var(--primary))" 
-                  : "hsl(var(--secondary))"
               }}
             />
             <button
               data-testid="toggle-university"
               onClick={() => setFeedType("university")}
-              className={`feed-toggle-btn flex items-center gap-2 ${feedType === "university" ? "active" : ""}`}
+              className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "university" ? "active" : "text-muted-foreground"}`}
             >
               <GraduationCap className="w-4 h-4" />
-              <span>{user?.university || "University"}</span>
+              <span className="truncate">{user?.university || "University"}</span>
             </button>
             <button
               data-testid="toggle-city"
               onClick={() => setFeedType("city")}
-              className={`feed-toggle-btn flex items-center gap-2 ${feedType === "city" ? "active" : ""}`}
+              className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "city" ? "active" : "text-muted-foreground"}`}
             >
               <MapPin className="w-4 h-4" />
-              <span>{user?.city || "City"}</span>
+              <span className="truncate">{user?.city || "City"}</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Sort Tabs */}
-      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
+      <div className="max-w-xl mx-auto px-4 py-3 flex items-center gap-2 border-b border-border/50">
         <button
           data-testid="sort-new"
           onClick={() => setSortType("new")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             sortType === "new" 
-              ? "bg-foreground text-background" 
+              ? "bg-muted text-foreground" 
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Clock className="w-4 h-4" />
+          <Clock className="w-3.5 h-3.5" />
           New
         </button>
         <button
           data-testid="sort-hot"
           onClick={() => setSortType("hot")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             sortType === "hot" 
-              ? "bg-foreground text-background" 
+              ? "bg-muted text-foreground" 
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Flame className="w-4 h-4" />
-          Hot
+          <TrendingUp className="w-3.5 h-3.5" />
+          Top
         </button>
         <button
           data-testid="refresh-btn"
           onClick={fetchPosts}
-          className="ml-auto p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+          className="ml-auto p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
 
       {/* Posts Feed */}
-      <main className="max-w-2xl mx-auto px-4 py-4">
+      <main className="max-w-xl mx-auto px-4 py-4">
         {loading && posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-            <p className="text-muted-foreground">Loading posts...</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+            <p className="text-sm text-muted-foreground">Loading posts...</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-              <MessageCircle className="w-10 h-10 text-muted-foreground" />
+            <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-6 h-6 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No posts yet</h3>
-            <p className="text-muted-foreground mb-6">
-              Be the first to share something with your {feedType === "university" ? "campus" : "city"}!
+            <h3 className="text-lg font-medium mb-2">No posts yet</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Be the first to share something
             </p>
             <Button 
               data-testid="first-post-btn"
               onClick={() => setShowCreatePost(true)}
-              className="btn-brutal bg-primary text-primary-foreground"
+              className="bg-primary text-primary-foreground"
             >
-              Create First Post
+              Create Post
             </Button>
           </div>
         ) : (
-          <div className="space-y-4 stagger-children">
+          <div className="space-y-3 stagger-children">
             {posts.map((post) => (
               <PostCard 
                 key={post.id} 
@@ -263,62 +253,51 @@ export default function FeedPage() {
         onClick={() => setShowCreatePost(true)}
         className="fab bg-primary text-primary-foreground"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-5 h-5" />
       </button>
-
-      {/* Bottom Navigation */}
-      <nav className="nav-floating">
-        <button
-          data-testid="nav-feed"
-          className="p-3 rounded-full bg-primary text-primary-foreground"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </button>
-      </nav>
 
       {/* Create Post Dialog */}
       <Dialog open={showCreatePost} onOpenChange={setShowCreatePost}>
-        <DialogContent className="sm:max-w-lg border-2 border-border">
+        <DialogContent className="sm:max-w-md bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+            <DialogTitle className="text-lg font-semibold flex items-center gap-2">
               {feedType === "university" ? (
                 <>
-                  <GraduationCap className="w-6 h-6 text-primary" />
+                  <GraduationCap className="w-5 h-5 text-primary" />
                   Post to {user?.university}
                 </>
               ) : (
                 <>
-                  <MapPin className="w-6 h-6 text-secondary" />
+                  <MapPin className="w-5 h-5 text-primary" />
                   Post to {user?.city}
                 </>
               )}
             </DialogTitle>
-            <DialogDescription>
-              Share your thoughts anonymously with your {feedType === "university" ? "campus" : "city"} community.
+            <DialogDescription className="text-muted-foreground">
+              Your post will be anonymous
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleCreatePost} className="space-y-4 pt-4">
+          <form onSubmit={handleCreatePost} className="space-y-4 pt-2">
             <div className="space-y-2">
               <Textarea
                 data-testid="post-content-input"
-                placeholder="What's on your mind? Share anonymously..."
+                placeholder="What's on your mind?"
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
-                className="min-h-[150px] border-2 text-lg resize-none"
+                className="min-h-[120px] bg-muted border-border text-foreground resize-none"
                 maxLength={500}
               />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Anonymous post</span>
+              <div className="flex justify-end text-xs text-muted-foreground">
                 <span>{newPostContent.length}/500</span>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowCreatePost(false)}
-                className="flex-1 h-12 border-2"
+                className="flex-1 border-border text-foreground"
               >
                 Cancel
               </Button>
@@ -326,9 +305,7 @@ export default function FeedPage() {
                 data-testid="submit-post-btn"
                 type="submit"
                 disabled={submitting || !newPostContent.trim()}
-                className={`flex-1 h-12 btn-brutal text-white ${
-                  feedType === "university" ? "bg-primary" : "bg-secondary"
-                }`}
+                className="flex-1 bg-primary text-primary-foreground"
               >
                 {submitting ? "Posting..." : "Post"}
               </Button>
@@ -345,53 +322,47 @@ function PostCard({ post, onVote, onClick }) {
   
   return (
     <div 
-      className="card-sticker cursor-pointer hover:-translate-y-1 transition-all duration-200"
+      className="card-minimal cursor-pointer"
       onClick={onClick}
       data-testid={`post-card-${post.id}`}
     >
-      {/* Post Content */}
-      <p className="text-lg leading-relaxed mb-4 whitespace-pre-wrap">
+      <p className="text-foreground leading-relaxed mb-4 whitespace-pre-wrap">
         {post.content}
       </p>
       
-      {/* Post Meta */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
-          {/* Upvote */}
           <button
             data-testid={`upvote-btn-${post.id}`}
             onClick={(e) => { e.stopPropagation(); onVote(post.id, 1); }}
-            className={`vote-btn upvote ${post.user_vote === 1 ? "active" : ""}`}
+            className={`vote-btn ${post.user_vote === 1 ? "upvote active" : ""}`}
           >
-            <ArrowUp className="w-5 h-5" />
+            <ArrowUp className="w-4 h-4" />
           </button>
           
-          {/* Score */}
-          <span className={`font-bold min-w-[40px] text-center ${
-            score > 0 ? "text-[hsl(var(--upvote))]" : 
-            score < 0 ? "text-[hsl(var(--downvote))]" : 
+          <span className={`text-sm font-medium min-w-[32px] text-center ${
+            score > 0 ? "text-primary" : 
+            score < 0 ? "text-muted-foreground" : 
             "text-muted-foreground"
           }`}>
             {score}
           </span>
           
-          {/* Downvote */}
           <button
             data-testid={`downvote-btn-${post.id}`}
             onClick={(e) => { e.stopPropagation(); onVote(post.id, -1); }}
-            className={`vote-btn downvote ${post.user_vote === -1 ? "active" : ""}`}
+            className={`vote-btn ${post.user_vote === -1 ? "downvote active" : ""}`}
           >
-            <ArrowDown className="w-5 h-5" />
+            <ArrowDown className="w-4 h-4" />
           </button>
         </div>
         
-        {/* Comments & Time */}
-        <div className="flex items-center gap-4 text-muted-foreground">
+        <div className="flex items-center gap-3 text-muted-foreground">
           <div className="flex items-center gap-1">
-            <MessageCircle className="w-4 h-4" />
-            <span className="text-sm">{post.comment_count}</span>
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span className="text-xs">{post.comment_count}</span>
           </div>
-          <span className="text-sm mono">{post.time_ago}</span>
+          <span className="text-xs">{post.time_ago}</span>
         </div>
       </div>
     </div>
