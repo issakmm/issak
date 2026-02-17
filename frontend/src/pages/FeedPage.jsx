@@ -170,8 +170,7 @@ export default function FeedPage() {
               className={`feed-toggle-btn flex items-center gap-2 ${feedType === "university" ? "active" : ""}`}
             >
               <GraduationCap className="w-4 h-4" />
-              <span className="hidden sm:inline">{user?.university || "University"}</span>
-              <span className="sm:hidden">{user?.university || "University"}</span>
+              <span>{user?.university || "University"}</span>
             </button>
             <button
               data-testid="toggle-city"
@@ -179,8 +178,7 @@ export default function FeedPage() {
               className={`feed-toggle-btn flex items-center gap-2 ${feedType === "city" ? "active" : ""}`}
             >
               <MapPin className="w-4 h-4" />
-              <span className="hidden sm:inline">{user?.city || "City"}</span>
-              <span className="sm:hidden">City</span>
+              <span>{user?.city || "City"}</span>
             </button>
           </div>
         </div>
