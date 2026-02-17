@@ -43,10 +43,6 @@ export default function LandingPage() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!email.endsWith(".edu")) {
-      toast.error("Only .edu email addresses are allowed");
-      return;
-    }
     
     setLoading(true);
     try {
@@ -134,7 +130,7 @@ export default function LandingPage() {
               <span className="text-muted-foreground">Anonymous by design.</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-md">
-              Share and discover what's happening in your university and city — without revealing who you are.
+              Share and discover what's happening in your city — without revealing who you are. University students get access to campus feeds.
             </p>
           </div>
 
@@ -176,9 +172,9 @@ export default function LandingPage() {
                 <Lock className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground mb-1">Verified Access</h3>
+                <h3 className="font-medium text-foreground mb-1">University Access</h3>
                 <p className="text-sm text-muted-foreground">
-                  Only .edu email holders can join. Real communities, anonymous voices.
+                  .edu email holders get access to campus feeds. Everyone can join city conversations.
                 </p>
               </div>
             </div>
@@ -190,7 +186,7 @@ export default function LandingPage() {
               <div>
                 <h3 className="font-medium text-foreground mb-1">Local Focus</h3>
                 <p className="text-sm text-muted-foreground">
-                  Switch between your university and city feeds. See what matters nearby.
+                  See what matters in your city. Connect with people nearby.
                 </p>
               </div>
             </div>
@@ -200,7 +196,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="fixed bottom-0 left-0 right-0 p-4 text-center text-xs text-muted-foreground border-t border-border/50 bg-background">
-        Only .edu email addresses • Anonymous posting • Your data stays private
+        Any email welcome • .edu gets university access • Anonymous posting
       </footer>
 
       {/* Auth Dialog */}
@@ -214,7 +210,7 @@ export default function LandingPage() {
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
               {authMode === "login" && "Sign in to continue"}
-              {authMode === "register" && "Use your .edu email to get started"}
+              {authMode === "register" && "Use any email. .edu emails get university access."}
               {authMode === "verify" && `Enter the code sent to ${pendingEmail}`}
             </DialogDescription>
           </DialogHeader>
@@ -227,7 +223,7 @@ export default function LandingPage() {
                   id="login-email"
                   data-testid="login-email-input"
                   type="email"
-                  placeholder="you@university.edu"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
@@ -280,18 +276,18 @@ export default function LandingPage() {
           {authMode === "register" && (
             <form onSubmit={handleRegister} className="space-y-4 pt-2">
               <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-foreground">University Email</Label>
+                <Label htmlFor="register-email" className="text-foreground">Email</Label>
                 <Input
                   id="register-email"
                   data-testid="register-email-input"
                   type="email"
-                  placeholder="you@university.edu"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-muted border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
-                <p className="text-xs text-muted-foreground">Must be a .edu email</p>
+                <p className="text-xs text-muted-foreground">.edu emails get university feed access</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password" className="text-foreground">Password</Label>

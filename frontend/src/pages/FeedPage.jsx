@@ -36,13 +36,23 @@ import {
 export default function FeedPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [feedType, setFeedType] = useState("university");
+  
+  // If user doesn't have university access, always show city feed
+  const hasUniversityAccess = user?.has_university_access;
+  const [feedType, setFeedType] = useState(hasUniversityAccess ? "university" : "city");
   const [sortType, setSortType] = useState("new");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [newPostContent, setNewPostContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Update feedType if user access changes
+  useEffect(() => {
+    if (!hasUniversityAccess && feedType === "university") {
+      setFeedType("city");
+    }
+  }, [hasUniversityAccess, feedType]);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -145,32 +155,40 @@ export default function FeedPage() {
             </DropdownMenu>
           </div>
 
-          {/* Feed Toggle */}
-          <div className="feed-toggle">
-            <div 
-              className="feed-toggle-indicator"
-              style={{
-                left: feedType === "university" ? "4px" : "calc(50%)",
-                width: "calc(50% - 4px)",
-              }}
-            />
-            <button
-              data-testid="toggle-university"
-              onClick={() => setFeedType("university")}
-              className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "university" ? "active" : "text-muted-foreground"}`}
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span className="truncate">{user?.university || "University"}</span>
-            </button>
-            <button
-              data-testid="toggle-city"
-              onClick={() => setFeedType("city")}
-              className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "city" ? "active" : "text-muted-foreground"}`}
-            >
-              <MapPin className="w-4 h-4" />
-              <span className="truncate">{user?.city || "City"}</span>
-            </button>
-          </div>
+          {/* Feed Toggle - Only show if user has university access */}
+          {hasUniversityAccess ? (
+            <div className="feed-toggle">
+              <div 
+                className="feed-toggle-indicator"
+                style={{
+                  left: feedType === "university" ? "4px" : "calc(50%)",
+                  width: "calc(50% - 4px)",
+                }}
+              />
+              <button
+                data-testid="toggle-university"
+                onClick={() => setFeedType("university")}
+                className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "university" ? "active" : "text-muted-foreground"}`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span className="truncate">{user?.university || "University"}</span>
+              </button>
+              <button
+                data-testid="toggle-city"
+                onClick={() => setFeedType("city")}
+                className={`feed-toggle-btn flex items-center justify-center gap-2 ${feedType === "city" ? "active" : "text-muted-foreground"}`}
+              >
+                <MapPin className="w-4 h-4" />
+                <span className="truncate">{user?.city || "City"}</span>
+              </button>
+            </div>
+          ) : (
+            /* City-only header for non-.edu users */
+            <div className="flex items-center gap-2 py-2 px-3 bg-muted rounded-lg">
+              <MapPin className="w-4 h-4 text-primary" />
+              <span className="font-medium">{user?.city || "City"}</span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -223,7 +241,7 @@ export default function FeedPage() {
             </div>
             <h3 className="text-lg font-medium mb-2">No posts yet</h3>
             <p className="text-sm text-muted-foreground mb-6">
-              Be the first to share something
+              Be the first to share something in {feedType === "university" ? "your campus" : user?.city}
             </p>
             <Button 
               data-testid="first-post-btn"
@@ -261,7 +279,7 @@ export default function FeedPage() {
         <DialogContent className="sm:max-w-md bg-card border-border">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold flex items-center gap-2">
-              {feedType === "university" ? (
+              {feedType === "university" && hasUniversityAccess ? (
                 <>
                   <GraduationCap className="w-5 h-5 text-primary" />
                   Post to {user?.university}
