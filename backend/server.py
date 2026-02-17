@@ -239,6 +239,16 @@ async def login(data: UserLogin):
     if not user.get("is_verified"):
         raise HTTPException(status_code=403, detail="Please verify your email first")
     
+    # Determine university access based on email (for backward compatibility)
+    has_university_access = user.get("has_university_access")
+    if has_university_access is None:
+        has_university_access = is_edu_email(user["email"])
+        # Update the user record for future logins
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"has_university_access": has_university_access}}
+        )
+    
     token = create_jwt_token(user["id"], user["email"])
     
     return {
@@ -249,19 +259,24 @@ async def login(data: UserLogin):
             "university": user.get("university"),
             "city": user["city"],
             "karma": user["karma"],
-            "has_university_access": user.get("has_university_access", False)
+            "has_university_access": has_university_access
         }
     }
 
 @api_router.get("/auth/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
+    # Determine university access based on email (for backward compatibility)
+    has_university_access = current_user.get("has_university_access")
+    if has_university_access is None:
+        has_university_access = is_edu_email(current_user["email"])
+    
     return {
         "id": current_user["id"],
         "email": current_user["email"],
         "university": current_user.get("university"),
         "city": current_user["city"],
         "karma": current_user["karma"],
-        "has_university_access": current_user.get("has_university_access", False)
+        "has_university_access": has_university_access
     }
 
 # Post Routes
