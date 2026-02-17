@@ -1,0 +1,119 @@
+{
+  "identity": {
+    "persona": "E1",
+    "style": "Neo-Brutalist Play",
+    "core_principles": [
+      "Fusion over Imitation: Mix Yik Yak anonymity with street-wear brand aesthetics.",
+      "Emotion First: Fun, Spontaneous, Secretive.",
+      "Content is King: The text posts are the hero. Typography must be bold.",
+      "Contrast: High contrast borders and vibrant accents."
+    ]
+  },
+  "typography": {
+    "headings": {
+      "family": "Fredoka, sans-serif",
+      "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap",
+      "weight": "600",
+      "usage": "Main titles, branding, karma counts"
+    },
+    "body": {
+      "family": "DM Sans, sans-serif",
+      "url": "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&display=swap",
+      "weight": "400",
+      "usage": "Post content, comments, metadata"
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap",
+      "usage": "Timestamps, distance indicators"
+    }
+  },
+  "colors": {
+    "light": {
+      "background": "#FDFBF7",
+      "foreground": "#1A1A1A",
+      "primary": "#8B5CF6",
+      "secondary": "#A3E635",
+      "accent": "#F472B6",
+      "card": "#FFFFFF",
+      "border": "#1A1A1A",
+      "muted": "#F3F4F6"
+    },
+    "dark": {
+      "background": "#0F0F10",
+      "foreground": "#FFFFFF",
+      "primary": "#A78BFA",
+      "secondary": "#BEF264",
+      "accent": "#F9A8D4",
+      "card": "#18181B",
+      "border": "#3F3F46",
+      "muted": "#27272A"
+    },
+    "palette_name": "Electric Campus",
+    "rules": [
+      "Use 2px solid borders for cards to create a 'sticker' look.",
+      "Primary color is for 'University' mode, Secondary (Lime) is for 'City' mode.",
+      "Upvote = Orange/Red, Downvote = Blue/Purple (Classic Yak colors)."
+    ]
+  },
+  "components": {
+    "buttons": {
+      "style": "Neo-Brutalist",
+      "classes": "rounded-full border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-[4px] active:shadow-none font-bold uppercase tracking-wide"
+    },
+    "cards": {
+      "style": "Sticker Sheet",
+      "classes": "bg-card border-2 border-border rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)] transition-all"
+    },
+    "inputs": {
+      "style": "Chunky",
+      "classes": "h-12 rounded-lg border-2 border-border bg-background px-4 focus:ring-2 focus:ring-primary focus:ring-offset-2 font-medium"
+    },
+    "navigation": {
+      "style": "Floating Dock",
+      "classes": "fixed bottom-6 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-xl border border-border/20 rounded-full p-2 shadow-2xl flex gap-2 z-50"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "container_padding": "p-4 md:p-8",
+      "section_gap": "gap-8",
+      "item_gap": "gap-4"
+    },
+    "grid": {
+      "feed": "grid grid-cols-1 md:grid-cols-[1fr_600px_1fr] gap-8",
+      "landing": "grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_students": "https://images.unsplash.com/photo-1758270704689-2850704b7338?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "city_night": "https://images.unsplash.com/photo-1770719798760-d77ec814069a?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "abstract_bg": "https://images.unsplash.com/photo-1770297345789-d72e0ac1d366?crop=entropy&cs=srgb&fm=jpg&q=85"
+    },
+    "icons": "Use 'lucide-react' for UI icons. Use 'phosphor-icons' (Duotone) for feature highlights."
+  },
+  "motion": {
+    "transitions": "transition-all duration-200 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]",
+    "hover_effects": "hover:-translate-y-1 hover:scale-[1.01]",
+    "loading": "Use a custom 'bouncing ball' loader instead of a spinner."
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Install 'lucide-react' and 'framer-motion'. Add the Google Fonts to index.html.",
+    "2. THEME: Implement the 'Electric Campus' color palette in tailwind.config.js. Ensure Dark Mode works via a toggle.",
+    "3. LAYOUT: Build the 'Feed' as the central experience. It should feel like an infinite scroll of 'stickers'.",
+    "4. TOGGLE: Create a prominent 'City / Uni' toggle at the top of the feed. This is the core navigation mechanic.",
+    "5. POSTS: Post cards must be highly legible. Use 18px+ for post text. Hide metadata (time, distance) until necessary or make it subtle.",
+    "6. AUTH: The Landing Page should be high-energy. Use the 'hero_students' image with a 'cutout' effect or bold typography overlay.",
+    "7. FAB: The 'Create Post' button must be a Floating Action Button (FAB) on mobile, bottom-right or center-bottom.",
+    "8. TESTING: Add data-testid to all interactive elements (upvote-btn, downvote-btn, comment-btn, toggle-feed).",
+    "9. DO NOT use generic gradients. Use solid colors or noise textures."
+  ],
+  "universal_guidelines": [
+    "Avoid 'AI Slop' - no generic centered layouts.",
+    "Use 2-3x more spacing than typical.",
+    "Micro-animations for every interaction.",
+    "No 'Inter' font for headings.",
+    "Use 'sonner' for toasts."
+  ]
+}
