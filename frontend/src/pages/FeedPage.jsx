@@ -294,6 +294,9 @@ export default function FeedPage() {
                 </>
               )}
             </DialogTitle>
+            <DialogDescription>
+              Share your thoughts anonymously with your {feedType === "university" ? "campus" : "city"} community.
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleCreatePost} className="space-y-4 pt-4">
