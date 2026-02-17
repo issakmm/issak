@@ -67,11 +67,83 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 def is_edu_email(email: str) -> bool:
-    return email.lower().endswith('.edu')
+    email_lower = email.lower()
+    
+    # Ethiopian university domains
+    ethiopian_university_domains = [
+        'aau.edu.et',        # Addis Ababa University
+        'ju.edu.et',         # Jimma University
+        'bdu.edu.et',        # Bahir Dar University
+        'astu.edu.et',       # Adama Science and Technology University
+        'hu.edu.et',         # Haramaya University
+        'mu.edu.et',         # Mekelle University
+        'gu.edu.et',         # Gondar University
+        'wku.edu.et',        # Wolkite University
+        'dbu.edu.et',        # Debre Berhan University
+        'dmu.edu.et',        # Debre Markos University
+        'aastu.edu.et',      # Addis Ababa Science and Technology University
+        'wu.edu.et',         # Wollo University
+        'su.edu.et',         # Samara University
+        'jju.edu.et',        # Jigjiga University
+        'hmu.edu.et',        # Hawassa University
+        'arbaминch.edu.et',  # Arba Minch University
+        'amu.edu.et',        # Arba Minch University (alternate)
+        'ddu.edu.et',        # Dire Dawa University
+        'wsu.edu.et',        # Wolaita Sodo University
+        'mtu.edu.et',        # Mizan-Tepi University
+    ]
+    
+    # Check for standard .edu domain
+    if email_lower.endswith('.edu'):
+        return True
+    
+    # Check for Ethiopian university domains
+    for domain in ethiopian_university_domains:
+        if email_lower.endswith('@' + domain) or email_lower.endswith('.' + domain):
+            return True
+    
+    # Also check for any .edu.et domain (catches all Ethiopian educational institutions)
+    if '.edu.et' in email_lower:
+        return True
+    
+    return False
 
 def extract_university_from_email(email: str) -> str:
-    # Extract university name from .edu email
-    domain = email.split('@')[1]
+    domain = email.split('@')[1].lower()
+    
+    # Ethiopian university name mappings
+    university_names = {
+        'aau.edu.et': 'Addis Ababa University',
+        'ju.edu.et': 'Jimma University',
+        'bdu.edu.et': 'Bahir Dar University',
+        'astu.edu.et': 'Adama Science and Technology University',
+        'hu.edu.et': 'Haramaya University',
+        'mu.edu.et': 'Mekelle University',
+        'gu.edu.et': 'Gondar University',
+        'wku.edu.et': 'Wolkite University',
+        'dbu.edu.et': 'Debre Berhan University',
+        'dmu.edu.et': 'Debre Markos University',
+        'aastu.edu.et': 'Addis Ababa Science and Technology University',
+        'wu.edu.et': 'Wollo University',
+        'su.edu.et': 'Samara University',
+        'jju.edu.et': 'Jigjiga University',
+        'hmu.edu.et': 'Hawassa University',
+        'amu.edu.et': 'Arba Minch University',
+        'ddu.edu.et': 'Dire Dawa University',
+        'wsu.edu.et': 'Wolaita Sodo University',
+        'mtu.edu.et': 'Mizan-Tepi University',
+    }
+    
+    # Check if domain is in our mapping
+    if domain in university_names:
+        return university_names[domain]
+    
+    # For other .edu.et domains, extract name from domain
+    if '.edu.et' in domain:
+        name_part = domain.replace('.edu.et', '').split('.')[-1]
+        return name_part.upper() + ' University'
+    
+    # For standard .edu domains
     parts = domain.replace('.edu', '').split('.')
     return ' '.join(parts).title()
 
